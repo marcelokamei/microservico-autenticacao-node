@@ -1,10 +1,11 @@
 import express from "express";
-import bearerAuthenticationMiddleware from "./middlewares/bearer-authentication.middleware";
 import errorHandler from "./middlewares/error-handler.middleware";
 import authorizationRoute from "./routes/authorization.route";
 
+import jwtAuthenticationMiddleware from "./middlewares/jwt-authentication.middleware";
 import { statusRoute } from "./routes/status.route";
 import usersRoute from "./routes/users.route";
+import basicAuthenticationMiddleware from "./middlewares/basic-authentication.middleware";
 
 const app = express();
 
@@ -14,8 +15,10 @@ app.use(express.urlencoded({extended: true}));
 
 //configuração das rotas
 app.use(statusRoute);
-app.use(bearerAuthenticationMiddleware, usersRoute);
 app.use(authorizationRoute);
+
+app.use(jwtAuthenticationMiddleware);
+app.use(usersRoute);
 
 //configuração dos handlers de erro
 app.use(errorHandler);

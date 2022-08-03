@@ -1,12 +1,24 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import JWT from "jsonwebtoken";
-import bearerAuthenticationMiddleware from "../middlewares/bearer-authentication.middleware";
+import basicAuthenticationMiddleware from "../middlewares/basic-authentication.middleware";
+import jwtAuthenticationMiddleware from "../middlewares/jwt-authentication.middleware";
 import ForbiddenError from "../models/errors/forbidden.error.model";
 
 const authorizationRoute = Router();
 
-authorizationRoute.post('/token', bearerAuthenticationMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+authorizationRoute.post('/token/validate', jwtAuthenticationMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+        res.status(StatusCodes.OK);
+
+    } catch (error) {
+        next(error);
+    }
+
+});
+
+authorizationRoute.post('/token', basicAuthenticationMiddleware, async (req: Request, res: Response, next: NextFunction) => {
 
     try {
 
@@ -26,5 +38,7 @@ authorizationRoute.post('/token', bearerAuthenticationMiddleware, async (req: Re
         next(error);
     };
 });
+
+
 
 export default authorizationRoute;
